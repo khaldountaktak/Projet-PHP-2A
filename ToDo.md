@@ -1,3 +1,3 @@
-- [ ] Work on the website ~3d #feat @john 2020-03-20  
-- [ ] Fix the homepage ~1d #bug @jane  
+- [ ] Faire les DataFixtures 
+- [ ] Faire le Crud d'un Album (Celui-ci doit être en premier car un billet ne peut pas exister sans album)
   - [ ] Sub-task or description  

@@ -15,7 +15,13 @@ class BilletRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Billet::class);
     }
+    public function save(Billet $entity, bool $flush=false){
+        $this->getEntityManager()->persist($entity);
 
+        if ($flush){
+            $this->getEntityManager()->flush();
+        }
+    }
     //    /**
     //     * @return Billet[] Returns an array of Billet objects
     //     */

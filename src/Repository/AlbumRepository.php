@@ -16,6 +16,21 @@ class AlbumRepository extends ServiceEntityRepository
         parent::__construct($registry, Album::class);
     }
 
+    public function save(Album $entity, bool $flush=false){
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush){
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function remove(Album $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
     //    /**
     //     * @return Album[] Returns an array of Album objects
     //     */

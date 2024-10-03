@@ -10,20 +10,12 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture
 {
     /**
-     * Generates initialization data for billets.
+     * Generer des billets et des albums.
+     * 
+     * 
      * @return \Generator
      */
-    private static function billetsGenerator()
-    {
-        yield ["Tunisie"];
-        yield ["France"];
-    }
-
-    /**
-     * Generates initialization data for albums.
-     * @return \Generator
-     */
-    private static function albumGenerator()
+    private static function billetsAndAlbumsGenerator()
     {
         yield ["Tunisie", "First Album"];
         yield ["France", "Second Album"];
@@ -31,39 +23,17 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // Create billets with placeholder albums (or with their actual album names)
-        foreach (self::billetsGenerator() as [$pays]) {
-            // Create a new Album with a generic or placeholder name
+        foreach (self::billetsAndAlbumsGenerator() as [$pays, $albumName]) {
+
             $album = new Album();
-            $album->setName("Placeholder Album for $pays");
+            $album->setName($albumName);
             $manager->persist($album);
 
-            // Create the corresponding Billet and set its Album
             $billet = $this->createBillet($pays, $album);
             $manager->persist($billet);
         }
 
-        // Persist all billets and their albums
-        $manager->flush();
-
-        // Update the album names to the final values based on `albumGenerator`
-        foreach (self::albumGenerator() as [$pays, $name]) {
-            // Find the existing billet by its 'pays'
-            $billet = $manager->getRepository(Billet::class)->findOneBy(['pays' => $pays]);
-
-            if ($billet) {
-                // Create a new Album entity with the correct name
-                $album = new Album();
-                $album->setName($name);
-                $manager->persist($album);
-
-                // Update the billet to use the new album
-                $billet->setAlbum($album);
-                $manager->persist($billet);
-            }
-        }
-
-        // Final flush to save the updated entities
+        // Persist all billets and albums in one go
         $manager->flush();
     }
 
@@ -82,6 +52,4 @@ class AppFixtures extends Fixture
 
         return $billet;
     }
-
-
 }

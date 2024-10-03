@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{# ... #}
+{% block title %}album n°{{ album.id }}{% endblock %}
+
+{% block body %}
+    <h1>album</h1>
+
+       {% dump album %}
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ album.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ album.name }}</td>
+            </tr>
+             <tr>
+                  <th>Billets de l'album</th>
+                  <td>
+                  <ul>
+                  {%  for billet in album.billets %}
+                  <li>
+                  <a href="{{ path('app_billet', {'id': billet.id}) }}"> {{ billet.pays }}</a>
+                  </li>
+                  {% endfor %} {# [inventaire].[objets] #}
+                  </ul> 
+                  </td>
+              </tr>
+            ...
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_album') }}">back to list</a>
+
+{% endblock %} {# body #} 
+{# ... #} 
+
+    

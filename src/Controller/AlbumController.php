@@ -53,16 +53,19 @@ public function show(ManagerRegistry $doctrine, $id) : Response
         $albumRepo = $doctrine->getRepository(Album::class);
         $album = $albumRepo->find($id);
 
-        if (!$album) {
-                throw $this->createNotFoundException('The album does not exist');
-        }
+        // if (!$album) {
+        //         throw $this->createNotFoundException('The album does not exist');
+        // }
 
-        $res = 'Le nom de cet album est ' . $album->getName();
-        //...
+        // $res = 'Le nom de cet album est ' . $album->getName();
+        // //...
 
-        $res .= '<p/><a href="' . $this->generateUrl('app_album') . '">Back</a>';
+        // $res .= '<p/><a href="' . $this->generateUrl('app_album') . '">Back</a>';
 
-        return new Response('<html><body>'. $res . '</body></html>');
+        // return new Response('<html><body>'. $res . '</body></html>');
+        return $this->render('album/show.html.twig',
+        [ 'album' => $album ]
+        );
 }
 
 

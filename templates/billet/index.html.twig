@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{# ... #}
+{% block title %}billet n°{{ billet.id }}{% endblock %}
+
+{% block body %}
+    <h1>billet</h1>
+
+       {% dump billet %}
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ billet.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ billet.pays }}</td>
+            </tr>
+            ...
+        </tbody>
+    </table>
+
+<a href="{{ path('album_show', {'id': billet.album.id}) }}">back to album</a>
+{% endblock %} {# body #} 
+{# ... #} 
+
+    
