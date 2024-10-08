@@ -1,12 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{# ... #}
-{% block title %}billet n°{{ billet.id }}{% endblock %}
+{% block title %}Billet n°{{ billet.id }}{% endblock %}
 
 {% block body %}
-    <h1>billet</h1>
-
-       {% dump billet %}
+    <h1>Billet</h1>
 
     <table class="table">
         <tbody>
@@ -15,15 +12,23 @@
                 <td>{{ billet.id }}</td>
             </tr>
             <tr>
-                <th>Name</th>
+                <th>Pays</th>
                 <td>{{ billet.pays }}</td>
             </tr>
-            ...
+            <tr>
+                <th>Valeur</th>
+                <td>{{ billet.valeur }}</td>
+            </tr>
+            <tr>
+                <th>Date d'apparition</th>
+                <td>{{ billet.DateApparition }}</td>
+            </tr>
+            <tr>
+                <th>Album</th>
+                <td><a href="{{ path('album_show', {'id': billet.album.id}) }}">{{ billet.album.name }}</a></td>
+            </tr>
         </tbody>
     </table>
 
-<a href="{{ path('album_show', {'id': billet.album.id}) }}">back to album</a>
-{% endblock %} {# body #} 
-{# ... #} 
-
-    
+    <a href="{{ path('album_show', {'id': billet.album.id}) }}">Retour à l'album</a>
+{% endblock %}

@@ -1,3 +1,10 @@
-- [ ] Faire les DataFixtures 
-- [ ] Faire le Crud d'un Album (Celui-ci doit être en premier car un billet ne peut pas exister sans album)
-  - [ ] Sub-task or description  
+- [x] Faire les DataFixtures
+- [x] Faire le Crud d'un Album (Celui-ci doit être en premier car un billet ne peut pas exister sans album)
+- [x] Faire le Crud d'un Billet 
+- [x] Faire les tests nécessaires
+- [x] Mettre à jour l'entité Billet pour inclure plus d'attributs
+- [x] Mettre à jour les DataFixtures
+- [x] Mettre à jour les CRUDs
+- [x] Creer les controleurs necessaires
+- [x] Creer les vues necessaires avec Twig
+- [x] Ajouter le styling avec CSS et bootstrap
