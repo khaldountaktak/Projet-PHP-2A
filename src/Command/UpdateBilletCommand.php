@@ -35,8 +35,10 @@ class UpdateBilletCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('billetId', InputArgument::REQUIRED, 'ID of the billet to update')
-            ->addArgument('newPays', InputArgument::REQUIRED, 'New country (pays) for the billet');
+            ->addArgument('billetId', InputArgument::REQUIRED, 'ID du billet à mettre à jour')
+            ->addArgument('newPays', InputArgument::OPTIONAL, 'Nouveau pays du billet')
+            ->addArgument('newValeur', InputArgument::OPTIONAL, 'Nouvelle valeur du billet')
+            ->addArgument('newDateApparition', InputArgument::OPTIONAL, 'Nouvelle date d\'apparition du billet (au format AAAA-MM-JJ)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -44,16 +46,21 @@ class UpdateBilletCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $billetId = $input->getArgument('billetId');
         $newPays = $input->getArgument('newPays');
+        $newValeur = $input->getArgument('newValeur');
+        $newDateApparition = $input->getArgument('newDateApparition');
 
         $billetToUpdate = $this->billetRepository->find($billetId);
 
         if ($billetToUpdate) {
             $billetToUpdate->setPays($newPays);
+            $billetToUpdate->setValeur($newValeur);
+            $billetToUpdate->setDateApparition($newDateApparition);
+            
             $this->billetRepository->save($billetToUpdate, true);
-            $io->success('Billet mis a jour.');
+            $io->success("Le billet a été mis à jour avec succès.");
             return Command::SUCCESS;
         } else {
-            $io->error('Billet avec id non trouvé "' . $billetId . '"!');
+            $io->error("Billet avec l'ID \"$billetId\" non trouvé !");
             return Command::FAILURE;
         }
     }

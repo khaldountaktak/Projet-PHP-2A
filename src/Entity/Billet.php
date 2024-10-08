@@ -20,6 +20,12 @@ class Billet
     #[ORM\JoinColumn(nullable: false)]
     private ?Album $album = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $valeur = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $DateApparition = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +51,30 @@ class Billet
     public function setAlbum(?Album $album): static
     {
         $this->album = $album;
+
+        return $this;
+    }
+
+    public function getValeur(): ?string
+    {
+        return $this->valeur;
+    }
+
+    public function setValeur(string $valeur): static
+    {
+        $this->valeur = $valeur;
+
+        return $this;
+    }
+
+    public function getDateApparition(): ?string
+    {
+        return $this->DateApparition;
+    }
+
+    public function setDateApparition(string $DateApparition): static
+    {
+        $this->DateApparition = $DateApparition;
 
         return $this;
     }
