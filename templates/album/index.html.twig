@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des albums{% endblock %}
+
+{% block body %}
+    <h1>Liste des Albums</h1>
+
+    <ul>
+        {% for album in albums %}
+            <li>
+                <a href="{{ path('album_show', { 'id': album.id }) }}">
+                    {{ album.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_album') }}">Retour à la liste des albums</a>
+
+{% endblock %}

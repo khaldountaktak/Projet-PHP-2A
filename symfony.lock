@@ -1,4 +1,7 @@
 {
+    "camurphy/bootstrap-menu-bundle": {
+        "version": "1.6.0"
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.13",
         "recipe": {

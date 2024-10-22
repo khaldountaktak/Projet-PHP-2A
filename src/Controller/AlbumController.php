@@ -13,33 +13,14 @@ use Doctrine\Persistence\ManagerRegistry;
 class AlbumController extends AbstractController
 {
     #[Route('/album', name: 'app_album')]
-    public function index(AlbumRepository $albumRepository): Response
+    public function index(ManagerRegistry $doctrine): Response
     {
-        $htmlpage= '<html>
-        <body>Liste des <b> albums </b> de tous les membres :
-          <ul>
-';
+        $albumRepo = $doctrine->getRepository(Album::class);
+        $albums = $albumRepo->findAll();
 
-      $albums= $albumRepository->findAll();
-
-      foreach($albums as $album){
-        $htmlpage .= '<li> <a href="' . $this->generateUrl('album_show', ['id' => $album->getId()]) . '">' . $album->getName() . ' </a> </li>';
-      }
-      
-
-        // return $this->render('album/index.html.twig', [
-        //     'controller_name' => 'AlbumController',
-        // ]);
-
-        $htmlpage .= '</ul>';
-
-        $htmlpage .= '</body></html>';
-
-        return new Response(
-            $htmlpage,
-            Response::HTTP_OK,
-            array('content-type' => 'text/html')
-            );
+        return $this->render('album/index.html.twig', [
+            'albums' => $albums
+        ]);
     }
 
   /**

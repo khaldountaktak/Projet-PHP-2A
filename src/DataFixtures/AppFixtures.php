@@ -32,7 +32,6 @@ class AppFixtures extends Fixture
             $manager->persist($billet);
         }
 
-        // Persist all billets and albums in one go
         $manager->flush();
     }
 

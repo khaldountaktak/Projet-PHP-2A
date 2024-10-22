@@ -1,0 +1,20 @@
+ {% extends 'base.html.twig' %}
+
+{% block title %}Liste des Billets{% endblock %}
+
+{% block body %}
+    <h1>Liste des Billets</h1>
+{% dump billets %}
+    <ul>
+        {% for billet in billets %}
+            <li>
+                <a href="{{ path('app_billet', { 'id': billet.id }) }}">
+          {{ billet.pays }} -  {{ billet.valeur }} - {{ billet.DateApparition }}
+                </a>
+            </li>
+
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_album') }}">Retour aux albums</a>
+{% endblock %}

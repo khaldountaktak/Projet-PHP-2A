@@ -20,4 +20,15 @@ class BilletController extends AbstractController
             'billet' => $billet,
         ]);
     }
+
+    #[Route('/billet', name: 'app_billets')]
+    public function list(ManagerRegistry $doctrine): Response
+    {
+        $billetRepo = $doctrine->getRepository(Billet::class);
+        $billets = $billetRepo->findAll();
+
+        return $this->render('billet/list.html.twig', [
+            'billets' => $billets,
+        ]);
+    }
 }

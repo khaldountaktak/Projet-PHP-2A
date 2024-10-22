@@ -4,8 +4,61 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5860caf25aa6b73e4f20cf82f04db0ba",
+    "content-hash": "51de75f12ccb87d2fe4617f01106bd47",
     "packages": [
+        {
+            "name": "camurphy/bootstrap-menu-bundle",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cameronmurphy/bootstrap-menu-bundle.git",
+                "reference": "8b62c5ae465723ee4e6cdf627a66b83f4a0e255b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cameronmurphy/bootstrap-menu-bundle/zipball/8b62c5ae465723ee4e6cdf627a66b83f4a0e255b",
+                "reference": "8b62c5ae465723ee4e6cdf627a66b83f4a0e255b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.1.3 || ^8.0",
+                "symfony/config": "^4.2|^5.0|^6.0|^7.0",
+                "symfony/dependency-injection": "^4.2|^5.0|^6.0|^7.0",
+                "symfony/security-bundle": "^4.2|^5.0|^6.0|^7.0",
+                "symfony/twig-bundle": "^4.2|^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "dg/bypass-finals": "^1.0",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpunit/phpunit": "^9.5",
+                "spatie/phpunit-snapshot-assertions": "^4.0",
+                "squizlabs/php_codesniffer": "^3.0",
+                "symfony/phpunit-bridge": "^7.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Camurphy\\BootstrapMenuBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cameron Murphy",
+                    "email": "camurphy@gmail.com"
+                }
+            ],
+            "description": "Render Bootstrap menus using Symfony",
+            "support": {
+                "issues": "https://github.com/cameronmurphy/bootstrap-menu-bundle/issues",
+                "source": "https://github.com/cameronmurphy/bootstrap-menu-bundle/tree/1.6.0"
+            },
+            "time": "2024-03-30T23:46:49+00:00"
+        },
         {
             "name": "composer/semver",
             "version": "3.4.2",

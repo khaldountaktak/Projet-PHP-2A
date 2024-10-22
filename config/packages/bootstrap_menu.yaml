@@ -1,0 +1,11 @@
+bootstrap_menu:
+  menus:
+    main:
+      items:
+        todos:
+          label: 'Billets'
+          route: 'app_billets'
+     
+        tags:
+          label: 'Albums'
+          route: 'app_album'  
