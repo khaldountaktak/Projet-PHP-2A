@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exposition index{% endblock %}
+
+{% block body %}
+    <h1>Exposition index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Publiee</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for exposition in expositions %}
+            <tr>
+                <td>{{ exposition.id }}</td>
+                <td>{{ exposition.description }}</td>
+                <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">show</a>
+                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_exposition_new') }}">Create new</a>
+{% endblock %}

@@ -4,7 +4,7 @@ bootstrap_menu:
       items:
         todos:
           label: 'Billets'
-          route: 'app_billets'
+          route: 'app_billet_index'
      
         tags:
           label: 'Albums'

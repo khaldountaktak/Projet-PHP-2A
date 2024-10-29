@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exposition n°{{ exposition.id }}{% endblock %}
+
+{% block body %}
+    <h1>Exposition</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ exposition.id }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ exposition.description }}</td>
+            </tr>
+            <tr>
+                <th>Publiée</th>
+                <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Billets de l'exposition</th>
+                <td>
+                    <ul>
+                    {% for billet in exposition.billets %}
+                        <li>
+                            <a href="{{ path('app_exposition_billet_show', {
+                                'exposition_id': exposition.id,
+                                'billet_id': billet.id
+                            }) }}">
+                                {{ billet.pays }} - {{ billet.valeur }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>Aucun billet dans cette exposition.</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_exposition_index') }}">Retour à la liste</a>
+
+{% endblock %}

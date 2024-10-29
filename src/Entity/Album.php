@@ -24,6 +24,9 @@ class Album
     #[ORM\OneToMany(targetEntity: Billet::class, mappedBy: 'album', orphanRemoval: true, cascade: ['persist'])]
     private Collection $billets;
 
+    #[ORM\OneToOne(inversedBy: 'album', cascade: ['persist', 'remove'])]
+    private ?Member $member = null;
+
     public function __construct()
     {
         $this->billets = new ArrayCollection();
@@ -79,5 +82,17 @@ class Album
     public function __toString(): string
     {
         return $this->name ?? 'Album';
+    }
+
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    public function setMember(Member $member): static
+    {
+        $this->member = $member;
+
+        return $this;
     }
 }

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Membre : {{ member.email }}{% endblock %}
+
+{% block body %}
+    <h1>Détails du Membre</h1>
+
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <td>{{ member.id }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ member.email }}</td>
+        </tr>
+        {# Other member details can go here #}
+    </table>
+
+    {# Link to the member's inventory (album) #}
+    {% if member.album %}
+        <a href="{{ path('album_show', { 'id': member.album.id }) }}">Mon Album</a>
+    {% else %}
+        <p>Pas d'album associé.</p>
+    {% endif %}
+
+    <a href="{{ path('app_member_index') }}">Retour à la liste des membres</a>
+{% endblock %}

@@ -1,34 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Billet n°{{ billet.id }}{% endblock %}
+{% block title %}Billet index{% endblock %}
 
 {% block body %}
-    <h1>Billet</h1>
+    <h1>Billet index</h1>
 
     <table class="table">
-        <tbody>
+        <thead>
             <tr>
                 <th>Id</th>
-                <td>{{ billet.id }}</td>
-            </tr>
-            <tr>
                 <th>Pays</th>
-                <td>{{ billet.pays }}</td>
-            </tr>
-            <tr>
                 <th>Valeur</th>
+                <th>DateApparition</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for billet in billets %}
+            <tr>
+                <td>{{ billet.id }}</td>
+                <td>{{ billet.pays }}</td>
                 <td>{{ billet.valeur }}</td>
-            </tr>
-            <tr>
-                <th>Date d'apparition</th>
                 <td>{{ billet.DateApparition }}</td>
+                <td>
+                    <a href="{{ path('app_billet_show', {'id': billet.id}) }}">show</a>
+                    <a href="{{ path('app_billet_edit', {'id': billet.id}) }}">edit</a>
+                </td>
             </tr>
+        {% else %}
             <tr>
-                <th>Album</th>
-                <td><a href="{{ path('album_show', {'id': billet.album.id}) }}">{{ billet.album.name }}</a></td>
+                <td colspan="5">no records found</td>
             </tr>
+        {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('album_show', {'id': billet.album.id}) }}">Retour à l'album</a>
 {% endblock %}

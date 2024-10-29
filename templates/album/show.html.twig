@@ -24,7 +24,7 @@
                   <ul>
                   {%  for billet in album.billets %}
                   <li>
-                  <a href="{{ path('app_billet', {'id': billet.id}) }}"> {{ billet.pays }}</a>
+                  <a href="{{ path('app_billet_show', {'id': billet.id}) }}"> {{ billet.pays }}</a>
                   </li>
                   {% endfor %} {# [inventaire].[objets] #}
                   </ul> 
@@ -33,9 +33,8 @@
             
         </tbody>
     </table>
-
-    <a href="{{ path('app_album') }}">back to list</a>
-
+    <a href="{{ path('app_billet_new', {'id': album.id}) }}">Add new</a>
+    <a href="{{ path('app_member_show', { 'id': album.member.id }) }}">Retour au Membre</a>
 {% endblock %} {# body #} 
 {# ... #} 
 

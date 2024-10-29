@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BilletRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BilletRepository::class)]
@@ -25,6 +27,17 @@ class Billet
 
     #[ORM\Column(length: 255)]
     private ?string $DateApparition = null;
+
+    /**
+     * @var Collection<int, Exposition>
+     */
+    #[ORM\ManyToMany(targetEntity: Exposition::class, mappedBy: 'billets')]
+    private Collection $expositions;
+
+    public function __construct()
+    {
+        $this->expositions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +88,33 @@ class Billet
     public function setDateApparition(string $DateApparition): static
     {
         $this->DateApparition = $DateApparition;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exposition>
+     */
+    public function getExpositions(): Collection
+    {
+        return $this->expositions;
+    }
+
+    public function addExposition(Exposition $exposition): static
+    {
+        if (!$this->expositions->contains($exposition)) {
+            $this->expositions->add($exposition);
+            $exposition->addBillet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExposition(Exposition $exposition): static
+    {
+        if ($this->expositions->removeElement($exposition)) {
+            $exposition->removeBillet($this);
+        }
 
         return $this;
     }
