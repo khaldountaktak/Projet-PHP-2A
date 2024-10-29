@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exposition index{% endblock %}
+{% block title %}Expositions Publiques{% endblock %}
 
 {% block body %}
-    <h1>Exposition index</h1>
+    <h1>EXpositions Publiques</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Description</th>
-                <th>Publiee</th>
-                <th>actions</th>
+                <th>Publiée</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,17 +21,17 @@
                 <td>{{ exposition.description }}</td>
                 <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">show</a>
-                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">edit</a>
+                    <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">Afficher</a>
+                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucune exposition publique trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_exposition_new') }}">Create new</a>
+    {# "Create New" link removed since gallery creation is contextualized to members #}
 {% endblock %}

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\DataFixtures;
 
 use App\Entity\Album;
@@ -18,18 +19,27 @@ class AppFixtures extends Fixture
         $this->hasher = $hasher;
     }
 
+    /**
+     * Generates billets and albums data.
+     */
     private static function billetsAndAlbumsGenerator()
     {
         yield ["Tunisie", "First Album", "10 TND", "2022-01-01"];
         yield ["France", "Second Album", "20 EUR", "2020-05-12"];
     }
 
+    /**
+     * Generates initialization data for members
+     */
     private function membersGenerator()
     {
         yield ['olivier@localhost', '123456'];
         yield ['slash@localhost', '123456'];
     }
 
+    /**
+     * Generates exposition data.
+     */
     private function expositionsGenerator()
     {
         yield ['Exposition in Tunisia', true];
@@ -39,21 +49,21 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         foreach ($this->membersGenerator() as $memberIndex => [$email, $plainPassword]) {
-            // Création de chaque membre
-            $user = new Member();
-            $password = $this->hasher->hashPassword($user, $plainPassword);
-            $user->setEmail($email);
-            $user->setPassword($password);
+            // Step 1: Create each member and set their password
+            $member = new Member();
+            $password = $this->hasher->hashPassword($member, $plainPassword);
+            $member->setEmail($email);
+            $member->setPassword($password);
 
-            // Création de l'album pour le membre
+            // Step 2: Create an album for each member
             $album = new Album();
             $album->setName("Album de $email");
-            $album->setMember($user);
+            $album->setMember($member);
 
-            $manager->persist($user);
+            $manager->persist($member);
             $manager->persist($album);
 
-            // Création des billets et association à l'album
+            // Step 3: Create billets and associate them with the album
             $billets = [];
             foreach (self::billetsAndAlbumsGenerator() as $billetIndex => [$pays, $albumName, $valeur, $dateApparition]) {
                 $billet = new Billet();
@@ -64,21 +74,22 @@ class AppFixtures extends Fixture
 
                 $manager->persist($billet);
 
-                // Sauvegarde des billets en tant que référence pour les expositions
+                // Save billet as a reference for later use in expositions
                 $this->addReference("billet_{$memberIndex}_{$billetIndex}", $billet);
                 $billets[] = $billet;
             }
 
-            // Création des expositions et association des billets via références
+            // Step 4: Create expositions and associate them with the member and billets
             foreach ($this->expositionsGenerator() as $expoIndex => [$description, $publiee]) {
                 $exposition = new Exposition();
                 $exposition->setDescription($description);
                 $exposition->setPubliee($publiee);
-                $exposition->setMember($user);
+                $exposition->setMember($member);
 
-                // Associer des billets existants par références
-                $exposition->addBillet($this->getReference("billet_{$memberIndex}_0"));
-                $exposition->addBillet($this->getReference("billet_{$memberIndex}_1"));
+                // Associate existing billets with the exposition
+                foreach ($billets as $billet) {
+                    $exposition->addBillet($billet);
+                }
 
                 $manager->persist($exposition);
             }

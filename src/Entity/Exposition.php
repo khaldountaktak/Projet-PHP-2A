@@ -21,7 +21,7 @@ class Exposition
     #[ORM\Column]
     private ?bool $publiee = null;
 
-    #[ORM\ManyToOne(inversedBy: 'billets')]
+    #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'expositions')]
     private ?Member $member = null;
 
     /**

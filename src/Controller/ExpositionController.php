@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Exposition;
 use App\Entity\Billet;
 use App\Form\ExpositionType;
+use App\Entity\Member;
 use App\Repository\ExpositionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,14 +39,37 @@ final class ExpositionController extends AbstractController
     public function index(ExpositionRepository $expositionRepository): Response
     {
         return $this->render('exposition/index.html.twig', [
-            'expositions' => $expositionRepository->findAll(),
+            'expositions' => $expositionRepository->findBy(['publiee' => true]),
         ]);
     }
 
-    #[Route('/new', name: 'app_exposition_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    // #[Route('/new', name: 'app_exposition_new', methods: ['GET', 'POST'])]
+    // public function new(Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     $exposition = new Exposition();
+    //     $form = $this->createForm(ExpositionType::class, $exposition);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $entityManager->persist($exposition);
+    //         $entityManager->flush();
+
+    //         return $this->redirectToRoute('app_exposition_index', [], Response::HTTP_SEE_OTHER);
+    //     }
+
+    //     return $this->render('exposition/new.html.twig', [
+    //         'exposition' => $exposition,
+    //         'form' => $form,
+    //     ]);
+    // }
+    #[Route('/new/{memberId}', name: 'app_exposition_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, #[MapEntity(id: 'memberId')] Member $member): Response
     {
+        // Create a new Exposition and associate it with the given Member
         $exposition = new Exposition();
+        $exposition->setMember($member);
+
+        // Create and handle the form
         $form = $this->createForm(ExpositionType::class, $exposition);
         $form->handleRequest($request);
 
@@ -53,12 +77,16 @@ final class ExpositionController extends AbstractController
             $entityManager->persist($exposition);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_exposition_index', [], Response::HTTP_SEE_OTHER);
+            // Redirect to the member's profile page after creation
+            return $this->redirectToRoute('app_member_show', [
+                'id' => $member->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('exposition/new.html.twig', [
             'exposition' => $exposition,
             'form' => $form,
+            'member' => $member,
         ]);
     }
 
@@ -79,7 +107,10 @@ final class ExpositionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_exposition_index', [], Response::HTTP_SEE_OTHER);
+            // Redirect to the member's profile page after editing
+            return $this->redirectToRoute('app_member_show', [
+                'id' => $exposition->getMember()->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('exposition/edit.html.twig', [
@@ -91,11 +122,16 @@ final class ExpositionController extends AbstractController
     #[Route('/{id}', name: 'app_exposition_delete', methods: ['POST'])]
     public function delete(Request $request, Exposition $exposition, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$exposition->getId(), $request->getPayload()->getString('_token'))) {
+        $memberId = $exposition->getMember()->getId();
+
+        if ($this->isCsrfTokenValid('delete'.$exposition->getId(), $request->get('_token'))) {
             $entityManager->remove($exposition);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_exposition_index', [], Response::HTTP_SEE_OTHER);
+        // Redirect to the member's profile page after deletion
+        return $this->redirectToRoute('app_member_show', [
+            'id' => $memberId,
+        ], Response::HTTP_SEE_OTHER);
     }
 }

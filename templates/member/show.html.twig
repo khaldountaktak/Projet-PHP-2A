@@ -1,28 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Membre : {{ member.email }}{% endblock %}
+{% block title %}Expositions de {{ member.email }}{% endblock %}
 
 {% block body %}
-    <h1>Détails du Membre</h1>
+    <h1>Expositions de {{ member.email }}</h1>
 
     <table class="table">
-        <tr>
-            <th>ID</th>
-            <td>{{ member.id }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ member.email }}</td>
-        </tr>
-        {# Other member details can go here #}
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Publiée</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for exposition in member.expositions %}
+            <tr>
+                <td>{{ exposition.id }}</td>
+                <td>{{ exposition.description }}</td>
+                <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">Afficher</a>
+                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune Expositions trouvée pour ce membre.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
 
-    {# Link to the member's inventory (album) #}
-    {% if member.album %}
-        <a href="{{ path('album_show', { 'id': member.album.id }) }}">Mon Album</a>
-    {% else %}
-        <p>Pas d'album associé.</p>
-    {% endif %}
+    {# Link to create a new gallery for this member #}
+    <a href="{{ path('app_exposition_new', { 'memberId': member.id }) }}">Créer une nouvelle Exposition</a>
 
     <a href="{{ path('app_member_index') }}">Retour à la liste des membres</a>
 {% endblock %}

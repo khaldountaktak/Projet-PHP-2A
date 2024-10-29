@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\MemberRepository;
@@ -39,12 +38,12 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Exposition>
      */
-    #[ORM\OneToMany(targetEntity: Exposition::class, mappedBy: 'member')]
-    private Collection $billets;
+    #[ORM\OneToMany(mappedBy: 'member', targetEntity: Exposition::class)]
+    private Collection $expositions;
 
     public function __construct()
     {
-        $this->billets = new ArrayCollection();
+        $this->expositions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,27 +141,27 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Exposition>
      */
-    public function getBillets(): Collection
+    public function getExpositions(): Collection
     {
-        return $this->billets;
+        return $this->expositions;
     }
 
-    public function addBillet(Exposition $billet): static
+    public function addExposition(Exposition $exposition): static
     {
-        if (!$this->billets->contains($billet)) {
-            $this->billets->add($billet);
-            $billet->setMember($this);
+        if (!$this->expositions->contains($exposition)) {
+            $this->expositions->add($exposition);
+            $exposition->setMember($this);
         }
 
         return $this;
     }
 
-    public function removeBillet(Exposition $billet): static
+    public function removeExposition(Exposition $exposition): static
     {
-        if ($this->billets->removeElement($billet)) {
+        if ($this->expositions->removeElement($exposition)) {
             // set the owning side to null (unless already changed)
-            if ($billet->getMember() === $this) {
-                $billet->setMember(null);
+            if ($exposition->getMember() === $this) {
+                $exposition->setMember(null);
             }
         }
 
@@ -170,8 +169,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function __toString(): string
-{
-    return $this->email ?? 'Unknown Member';
-}
-
+    {
+        return $this->email ?? 'Unknown Member';
+    }
 }
