@@ -26,6 +26,10 @@ class MemberController extends AbstractController
     #[Route('/member/{id}', name: 'app_member_show')]
     public function show(int $id, MemberRepository $membreRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login'); // Replace 'app_login' with your actual login route name
+        }
+        
         $member = $membreRepository->find($id);
         
         if (!$member) {

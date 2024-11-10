@@ -28,6 +28,7 @@ class BilletType extends AbstractType
                 'class' => Exposition::class,
                 'choice_label' => 'id',
                 'multiple' => true,
+                'by_reference' => false, // Important for Many-to-Many relationships
             ])
             ->add('imageName', TextType::class,  ['disabled' => true])
             ->add('imageFile', VichImageType::class, ['required' => false]);

@@ -42,7 +42,7 @@ final class ExpositionController extends AbstractController
             throw $this->createAccessDeniedException("You cannot access the requested resource!");
         }
     
-        return $this->render('exposition/billet show.html.twig', [
+        return $this->render('exposition/billetshow.html.twig', [
             'billet' => $billet,
             'exposition' => $exposition
         ]);

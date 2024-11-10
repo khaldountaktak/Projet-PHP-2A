@@ -13,6 +13,11 @@ bootstrap_menu:
         members:
           label: 'Membres'
           route: 'app_member_index'
+        
+        exposition:
+          label: 'Expositions'
+          route: 'app_exposition_index'
+          
     anonymousaccount:
       items:
          login:

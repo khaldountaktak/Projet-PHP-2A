@@ -16,25 +16,30 @@ class AlbumController extends AbstractController
     #[Route('/album', name: 'app_album')]
     public function index(AlbumRepository $albumRepository, MemberRepository $memberRepository): Response
     {
+        // Check if the user is logged in
+        if (!$this->getUser()) {
+            // Redirect to login page or return an error message
+            return $this->redirectToRoute('app_login'); // Adjust this route name to match your login route
+        }
+    
         if ($this->isGranted('ROLE_ADMIN')) {
-
             $albums = $albumRepository->findAll();
         } else {
-
             $email = $this->getUser()->getUserIdentifier();
             $member = $memberRepository->findOneBy(['email' => $email]);
             
             if (!$member) {
                 throw $this->createNotFoundException("Member not found.");
             }
-            dump($member->getAlbum());
+            
             $albums = $member->getAlbum();
         }
-
+    
         return $this->render('album/index.html.twig', [
             'albums' => $albums
         ]);
     }
+    
 
 
   /**

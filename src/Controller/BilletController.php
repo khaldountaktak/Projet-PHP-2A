@@ -18,6 +18,10 @@ final class BilletController extends AbstractController
     #[Route('/', name: 'app_billet_index', methods: ['GET'])]
     public function index(BilletRepository $billetRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login'); // Adjust 'app_login' to your actual login route
+        }
+
         if ($this->isGranted('ROLE_ADMIN')) {
             $billets = $billetRepository->findAll();
         } else {
@@ -33,35 +37,32 @@ final class BilletController extends AbstractController
     #[Route('/billet/new/{id}', name: 'app_billet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, Album $album): Response
     {
-        // Step 1: Create a new Billet and set its Album
         $billet = new Billet();
         $billet->setAlbum($album);
-
-        // Step 2: Create the form and handle the request
+    
         $form = $this->createForm(BilletType::class, $billet);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $imagefile = $billet->getImageFile();
-            //  if($imagefile) {
-            //          $mimetype = $imagefile->getMimeType();
-            //          $billet->setContentType($mimetype);
-            //  }
-
-            // Step 3: Persist the new Billet and redirect to the album page
+            // Synchronize the relationship explicitly
+            foreach ($billet->getExpositions() as $exposition) {
+                $exposition->addBillet($billet);
+            }
+    
             $entityManager->persist($billet);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_album', [
-                'id' => $album->getId()
+                'id' => $album->getId(),
             ], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('billet/new.html.twig', [
             'billet' => $billet,
             'form' => $form,
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_billet_show', methods: ['GET'])]
     public function show(Billet $billet): Response
