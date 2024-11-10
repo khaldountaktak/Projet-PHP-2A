@@ -24,25 +24,48 @@ final class ExpositionController extends AbstractController
         #[MapEntity(id: 'exposition_id')] Exposition $exposition,
         #[MapEntity(id: 'billet_id')] Billet $billet
     ): Response {
-        // Vérifie si le billet appartient bien à l'exposition
         if (!$exposition->getBillets()->contains($billet)) {
             throw $this->createNotFoundException("Couldn't find such a billet in this exposition!");
         }
     
-        return $this->render('exposition/billetshow.html.twig', [
+        $hasAccess = false;
+        if ($this->isGranted('ROLE_ADMIN') || $exposition->isPubliee()) {
+            $hasAccess = true;
+        } else {
+            $member = $this->getUser();
+            if ($member && ($member === $exposition->getMember())) {
+                $hasAccess = true;
+            }
+        }
+    
+        if (!$hasAccess) {
+            throw $this->createAccessDeniedException("You cannot access the requested resource!");
+        }
+    
+        return $this->render('exposition/billet show.html.twig', [
             'billet' => $billet,
-            'exposition' => $exposition,
+            'exposition' => $exposition
         ]);
     }
-
-    #[Route(name: 'app_exposition_index', methods: ['GET'])]
+    #[Route('/', name: 'app_exposition_index', methods: ['GET'])]
     public function index(ExpositionRepository $expositionRepository): Response
     {
+        $member = $this->getUser();
+        $publicExpositions = $expositionRepository->findBy(['publiee' => true]);
+
+        $privateExpositions = [];
+        if ($member) {
+            $privateExpositions = $expositionRepository->findBy([
+                'publiee' => false,
+                'member' => $member,
+            ]);
+        }
+
         return $this->render('exposition/index.html.twig', [
-            'expositions' => $expositionRepository->findBy(['publiee' => true]),
+            'public_expositions' => $publicExpositions,
+            'private_expositions' => $privateExpositions,
         ]);
     }
-
     // #[Route('/new', name: 'app_exposition_new', methods: ['GET', 'POST'])]
     // public function new(Request $request, EntityManagerInterface $entityManager): Response
     // {
@@ -93,10 +116,24 @@ final class ExpositionController extends AbstractController
     #[Route('/{id}', name: 'app_exposition_show', methods: ['GET'])]
     public function show(Exposition $exposition): Response
     {
-        return $this->render('exposition/show.html.twig', [
-            'exposition' => $exposition,
-        ]);
+            $hasAccess = false;
+            if($this->isGranted('ROLE_ADMIN') || $exposition->isPubliee()) {
+                    $hasAccess = true;
+            }
+            else {
+                    $member = $this->getUser();
+                    if ( $member &&  ($member == $exposition->getMember()) ) {
+                        $hasAccess = true;
+                    }
+            }
+            if(! $hasAccess) {
+                    throw $this->createAccessDeniedException("You cannot access the requested resource!");
+            }
+            return $this->render('exposition/show.html.twig', [
+                    'exposition' => $exposition,
+            ]);
     }
+    
 
     #[Route('/{id}/edit', name: 'app_exposition_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Exposition $exposition, EntityManagerInterface $entityManager): Response
@@ -118,20 +155,31 @@ final class ExpositionController extends AbstractController
             'form' => $form,
         ]);
     }
-
     #[Route('/{id}', name: 'app_exposition_delete', methods: ['POST'])]
     public function delete(Request $request, Exposition $exposition, EntityManagerInterface $entityManager): Response
     {
         $memberId = $exposition->getMember()->getId();
-
-        if ($this->isCsrfTokenValid('delete'.$exposition->getId(), $request->get('_token'))) {
+        $hasAccess = false;
+    
+        // Check if the user has access to delete the exposition
+        if ($this->isGranted('ROLE_ADMIN') || $this->getUser() === $exposition->getMember()) {
+            $hasAccess = true;
+        }
+    
+        if (!$hasAccess) {
+            throw $this->createAccessDeniedException("You cannot delete this exposition!");
+        }
+    
+        // Check the CSRF token for security
+        if ($this->isCsrfTokenValid('delete' . $exposition->getId(), $request->get('_token'))) {
             $entityManager->remove($exposition);
             $entityManager->flush();
         }
-
+    
         // Redirect to the member's profile page after deletion
         return $this->redirectToRoute('app_member_show', [
             'id' => $memberId,
         ], Response::HTTP_SEE_OTHER);
     }
+    
 }

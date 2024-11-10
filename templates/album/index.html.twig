@@ -5,16 +5,24 @@
 {% block body %}
     <h1>Liste des Albums</h1>
 
-    <ul>
-        {% for album in albums %}
-            <li>
-                <a href="{{ path('album_show', { 'id': album.id }) }}">
-                    {{ album.name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+    {% if albums is iterable %}
+        <ul>
+            {% for album in albums %}
+                <li>
+                    <a href="{{ path('album_show', { 'id': album.id }) }}">
+                        {{ album.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% elseif albums is defined %}
+        {# Display a single album if it's not iterable (a single object) #}
+        <h2>{{ albums.name }}</h2>
+        <p>ID: {{ albums.id }}</p>
+        <a href="{{ path('album_show', { 'id': albums.id }) }}">Afficher l'album</a>
+    {% else %}
+        <p>Aucun album trouvé.</p>
+    {% endif %}
 
     <a href="{{ path('app_album') }}">Retour à la liste des albums</a>
-
 {% endblock %}

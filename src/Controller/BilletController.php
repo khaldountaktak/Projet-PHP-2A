@@ -15,11 +15,18 @@ use App\Entity\Album;
 #[Route('/billet')]
 final class BilletController extends AbstractController
 {
-    #[Route(name: 'app_billet_index', methods: ['GET'])]
+    #[Route('/', name: 'app_billet_index', methods: ['GET'])]
     public function index(BilletRepository $billetRepository): Response
     {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $billets = $billetRepository->findAll();
+        } else {
+            $member = $this->getUser();
+            $billets = $billetRepository->findMemberBillets($member);
+        }
+
         return $this->render('billet/index.html.twig', [
-            'billets' => $billetRepository->findAll(),
+            'billets' => $billets,
         ]);
     }
 
@@ -35,11 +42,17 @@ final class BilletController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imagefile = $billet->getImageFile();
+            //  if($imagefile) {
+            //          $mimetype = $imagefile->getMimeType();
+            //          $billet->setContentType($mimetype);
+            //  }
+
             // Step 3: Persist the new Billet and redirect to the album page
             $entityManager->persist($billet);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_album_show', [
+            return $this->redirectToRoute('app_album', [
                 'id' => $album->getId()
             ], Response::HTTP_SEE_OTHER);
         }
@@ -67,6 +80,7 @@ final class BilletController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
     
+            // Rediriger vers la page de l'album associé au billet après modification
             return $this->redirectToRoute('album_show', [
                 'id' => $billet->getAlbum()->getId()
             ], Response::HTTP_SEE_OTHER);
@@ -82,17 +96,24 @@ final class BilletController extends AbstractController
     #[Route('/{id}', name: 'app_billet_delete', methods: ['POST'])]
     public function delete(Request $request, Billet $billet, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$billet->getId(), $request->getPayload()->getString('_token'))) {
-            $albumId = $billet->getAlbum()->getId(); 
+        // Vérifier le token CSRF pour sécuriser la suppression
+        if ($this->isCsrfTokenValid('delete' . $billet->getId(), $request->get('_token'))) {
+            // Récupérer l'ID de l'album avant de supprimer le billet
+            $albumId = $billet->getAlbum()->getId();
+            
+            // Supprimer le billet
             $entityManager->remove($billet);
             $entityManager->flush();
     
+            // Redirection vers la page de l'album associé après suppression
             return $this->redirectToRoute('album_show', [
                 'id' => $albumId
             ], Response::HTTP_SEE_OTHER);
         }
     
+        // Redirection en cas d'échec du token CSRF
         return $this->redirectToRoute('app_billet_index', [], Response::HTTP_SEE_OTHER);
     }
+    
     
 }

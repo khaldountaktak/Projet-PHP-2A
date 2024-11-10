@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Expositions Publiques{% endblock %}
+{% block title %}Expositions{% endblock %}
 
 {% block body %}
-    <h1>EXpositions Publiques</h1>
+    <h1>Expositions</h1>
 
+    <h2>Expositions Publiques</h2>
     <table class="table">
         <thead>
             <tr>
@@ -15,14 +16,16 @@
             </tr>
         </thead>
         <tbody>
-        {% for exposition in expositions %}
+        {% for exposition in public_expositions %}
             <tr>
                 <td>{{ exposition.id }}</td>
                 <td>{{ exposition.description }}</td>
                 <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">Afficher</a>
-                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">Modifier</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">Modifier</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -33,5 +36,34 @@
         </tbody>
     </table>
 
-    {# "Create New" link removed since gallery creation is contextualized to members #}
+    {% if private_expositions is not empty %}
+        <h2>Vos Expositions Privées</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Description</th>
+                    <th>Publiée</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for exposition in private_expositions %}
+                <tr>
+                    <td>{{ exposition.id }}</td>
+                    <td>{{ exposition.description }}</td>
+                    <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+                    <td>
+                        <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">Afficher</a>
+                        <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">Aucune exposition privée trouvée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}

@@ -23,6 +23,10 @@
                 <th>DateApparition</th>
                 <td>{{ billet.DateApparition }}</td>
             </tr>
+            <tr>
+    <th>Image</th>
+    <td><img src="{{ vich_uploader_asset(billet, 'imageFile') }}"/></td>
+</tr>
         </tbody>
     </table>
 

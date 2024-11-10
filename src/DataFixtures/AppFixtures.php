@@ -8,19 +8,12 @@ use App\Entity\Exposition;
 use App\Entity\Member;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements DependentFixtureInterface
 {
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(UserPasswordHasherInterface $hasher)
-    {
-        $this->hasher = $hasher;
-    }
-
     /**
-     * Generates billets and albums data.
+     * Génère les données de billets et albums.
      */
     private static function billetsAndAlbumsGenerator()
     {
@@ -29,16 +22,7 @@ class AppFixtures extends Fixture
     }
 
     /**
-     * Generates initialization data for members
-     */
-    private function membersGenerator()
-    {
-        yield ['olivier@localhost', '123456'];
-        yield ['slash@localhost', '123456'];
-    }
-
-    /**
-     * Generates exposition data.
+     * Génère les données d'exposition.
      */
     private function expositionsGenerator()
     {
@@ -48,22 +32,20 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->membersGenerator() as $memberIndex => [$email, $plainPassword]) {
-            // Step 1: Create each member and set their password
-            $member = new Member();
-            $password = $this->hasher->hashPassword($member, $plainPassword);
-            $member->setEmail($email);
-            $member->setPassword($password);
+        $memberEmails = ['olivier@localhost', 'slash@localhost'];
 
-            // Step 2: Create an album for each member
+        foreach ($memberEmails as $memberEmail) {
+            // Récupérer le membre en utilisant la référence créée dans MemberFixtures
+            /** @var Member $member */
+            $member = $this->getReference("member_{$memberEmail}");
+
+            // Créer un album pour chaque membre
             $album = new Album();
-            $album->setName("Album de $email");
+            $album->setName("Album de $memberEmail");
             $album->setMember($member);
-
-            $manager->persist($member);
             $manager->persist($album);
 
-            // Step 3: Create billets and associate them with the album
+            // Créer des billets et les associer avec l'album
             $billets = [];
             foreach (self::billetsAndAlbumsGenerator() as $billetIndex => [$pays, $albumName, $valeur, $dateApparition]) {
                 $billet = new Billet();
@@ -74,19 +56,19 @@ class AppFixtures extends Fixture
 
                 $manager->persist($billet);
 
-                // Save billet as a reference for later use in expositions
-                $this->addReference("billet_{$memberIndex}_{$billetIndex}", $billet);
+                // Ajouter une référence pour utiliser le billet dans les expositions
+                $this->addReference("billet_{$memberEmail}_{$billetIndex}", $billet);
                 $billets[] = $billet;
             }
 
-            // Step 4: Create expositions and associate them with the member and billets
+            // Créer des expositions et les associer avec les membres et billets
             foreach ($this->expositionsGenerator() as $expoIndex => [$description, $publiee]) {
                 $exposition = new Exposition();
                 $exposition->setDescription($description);
                 $exposition->setPubliee($publiee);
                 $exposition->setMember($member);
 
-                // Associate existing billets with the exposition
+                // Associer les billets existants à l'exposition
                 foreach ($billets as $billet) {
                     $exposition->addBillet($billet);
                 }
@@ -96,5 +78,12 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            MemberFixtures::class,
+        ];
     }
 }

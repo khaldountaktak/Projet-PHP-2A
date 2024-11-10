@@ -88,6 +88,7 @@ class Exposition
     {
         if (!$this->billets->contains($billet)) {
             $this->billets->add($billet);
+            $billet->addExposition($this);
         }
 
         return $this;
@@ -95,8 +96,9 @@ class Exposition
 
     public function removeBillet(Billet $billet): static
     {
-        $this->billets->removeElement($billet);
-
+        if ($this->billets->removeElement($billet)) {
+            $billet->removeExposition($this); // Maintain bidirectional relationship
+        }
         return $this;
     }
 }

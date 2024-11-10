@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Exposition;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Billet;
 
 /**
  * @extends ServiceEntityRepository<Exposition>
@@ -15,7 +16,15 @@ class ExpositionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Exposition::class);
     }
-
+    public function findBilletExpositions(Billet $billet): array
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.billets', 'b') 
+            ->andWhere('b = :billet')
+            ->setParameter('billet', $billet)
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Exposition[] Returns an array of Exposition objects
     //     */

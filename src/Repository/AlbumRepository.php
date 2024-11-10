@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Album;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Billet;
 
 /**
  * @extends ServiceEntityRepository<Album>
@@ -23,10 +24,22 @@ class AlbumRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
     public function remove(Album $entity, bool $flush = false): void
     {
+        // Get the repository for Billet (or your actual [Objet] entity)
+        $billetRepository = $this->getEntityManager()->getRepository(Billet::class);
+
+        // Clean up the billets associated with the album
+        $billets = $entity->getBillets(); // Assuming getBillets() returns associated Billet objects
+        foreach ($billets as $billet) {
+            $billetRepository->remove($billet, $flush); // Call remove on each billet
+        }
+
+        // Remove the album itself
         $this->getEntityManager()->remove($entity);
 
+        // Flush if required
         if ($flush) {
             $this->getEntityManager()->flush();
         }
