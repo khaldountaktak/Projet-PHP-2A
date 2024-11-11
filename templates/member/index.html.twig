@@ -1,20 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste des Membres{% endblock %}
+
 {% block body %}
-{{ dump(members)}}
-    <h1>Liste des Membres</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Liste des Membres</h1>
 
-    <ul>
-        {% for member in members %}
-            <li>
-                <a href="{{ path('app_member_show', { id: member.id }) }}">
-                    {{ member.email }}
-                </a>
-            </li>
-        {% else %}
-            <li>Aucun membre trouvé.</li>
-        {% endfor %}
-    </ul>
-
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                    <tr>
+                        <td>{{ member.id }}</td>
+                        <td>{{ member.email }}</td>
+                        <td>
+                            <a href="{{ path('app_member_show', { id: member.id }) }}" class="btn btn-primary btn-sm">
+                                Voir le profil
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">Aucun membre trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

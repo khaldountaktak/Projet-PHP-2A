@@ -1,18 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Billet index{% endblock %}
+{% block title %}Billet Index{% endblock %}
 
 {% block body %}
-    <h1>Billet index</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Liste des Billets</h1>
 
-    <table class="table">
-        <thead>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
             <tr>
-                <th>Id</th>
-                <th>Pays</th>
-                <th>Valeur</th>
-                <th>DateApparition</th>
-                <th>actions</th>
+                <th scope="col">ID</th>
+                <th scope="col">Pays</th>
+                <th scope="col">Valeur</th>
+                <th scope="col">Date d'apparition</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,16 +24,20 @@
                 <td>{{ billet.valeur }}</td>
                 <td>{{ billet.DateApparition }}</td>
                 <td>
-                    <a href="{{ path('app_billet_show', {'id': billet.id}) }}">show</a>
-                    <a href="{{ path('app_billet_edit', {'id': billet.id}) }}">edit</a>
+                    <a href="{{ path('app_billet_show', {'id': billet.id}) }}" class="btn btn-outline-primary btn-sm">
+                        Afficher
+                    </a>
+                    <a href="{{ path('app_billet_edit', {'id': billet.id}) }}" class="btn btn-outline-secondary btn-sm">
+                        Modifier
+                    </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5" class="text-center">Aucun enregistrement trouvé.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
+</div>
 {% endblock %}

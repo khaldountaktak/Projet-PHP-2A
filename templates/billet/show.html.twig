@@ -3,36 +3,44 @@
 {% block title %}Billet{% endblock %}
 
 {% block body %}
-    <h1>Billet</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Détails du Billet</h1>
 
-    <table class="table">
+    <table class="table table-bordered table-hover">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th scope="row">ID</th>
                 <td>{{ billet.id }}</td>
             </tr>
             <tr>
-                <th>Pays</th>
+                <th scope="row">Pays</th>
                 <td>{{ billet.pays }}</td>
             </tr>
             <tr>
-                <th>Valeur</th>
+                <th scope="row">Valeur</th>
                 <td>{{ billet.valeur }}</td>
             </tr>
             <tr>
-                <th>DateApparition</th>
+                <th scope="row">Date d'apparition</th>
                 <td>{{ billet.DateApparition }}</td>
             </tr>
             <tr>
-    <th>Image</th>
-    <td><img src="{{ vich_uploader_asset(billet, 'imageFile') }}"/></td>
-</tr>
+                <th scope="row">Image</th>
+                <td>
+                    {% if billet.imageFile %}
+                        <img src="{{ vich_uploader_asset(billet, 'imageFile') }}" class="img-fluid" alt="Image du billet" />
+                    {% else %}
+                        <span>Aucune image disponible</span>
+                    {% endif %}
+                </td>
+            </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_billet_index') }}">back to list</a>
-
-    <a href="{{ path('app_billet_edit', {'id': billet.id}) }}">edit</a>
-
-    {{ include('billet/_delete_form.html.twig') }}
+    <div class="d-flex mt-4">
+        <a href="{{ path('app_billet_index') }}" class="btn btn-secondary me-2">Retour à la liste</a>
+        <a href="{{ path('app_billet_edit', {'id': billet.id}) }}" class="btn btn-primary me-2">Modifier</a>
+        {{ include('billet/_delete_form.html.twig', { 'class': 'ms-2' }) }}
+    </div>
+</div>
 {% endblock %}

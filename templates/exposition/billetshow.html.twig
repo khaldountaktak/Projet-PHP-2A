@@ -1,43 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exposition n°{{ exposition.id }}{% endblock %}
+{% block title %}Billet n°{{ billet.id }}{% endblock %}
 
 {% block body %}
-    <h1>Exposition</h1>
+    <h1>Billet Details</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ exposition.id }}</td>
+                <th>ID</th>
+                <td>{{ billet.id }}</td>
             </tr>
             <tr>
-                <th>Description</th>
-                <td>{{ exposition.description }}</td>
+                <th>Pays</th>
+                <td>{{ billet.pays }}</td>
             </tr>
             <tr>
-                <th>Publiée</th>
-                <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+                <th>Valeur</th>
+                <td>{{ billet.valeur }}</td>
             </tr>
             <tr>
-                <th>Billets de l'exposition</th>
+                <th>Date d'apparition</th>
+                <td>{{ billet.dateApparition }}</td>
+            </tr>
+            <tr>
+                <th>Expositions</th>
                 <td>
                     <ul>
-                    {% for billet in exposition.billets %}
+                    {% for exposition in billet.expositions %}
                         <li>
-                            {{ billet.pays }} - {{ billet.valeur }}
-                            <ul>
-                                {% for exposition in billet.expositions %}
-                                    <li>
-                                        <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">
-                                            Retour à {{ exposition.description }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                            <a href="{{ path('app_exposition_show', { 'id': exposition.id }) }}">
+                                {{ exposition.description }}
+                            </a>
                         </li>
                     {% else %}
-                        <li>Aucun billet dans cette exposition.</li>
+                        <li>Aucune exposition associée à ce billet.</li>
                     {% endfor %}
                     </ul>
                 </td>
@@ -45,6 +42,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_exposition_index') }}">Retour à la liste</a>
-
+    <a href="{{ path('app_exposition_show', { 'id': exposition.id }) }}">Retour à l'exposition</a>
 {% endblock %}

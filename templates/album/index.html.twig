@@ -1,28 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des albums{% endblock %}
+{% block title %}Liste des Albums{% endblock %}
 
 {% block body %}
-    <h1>Liste des Albums</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Liste des Albums</h1>
 
     {% if albums is iterable %}
-        <ul>
-            {% for album in albums %}
-                <li>
-                    <a href="{{ path('album_show', { 'id': album.id }) }}">
-                        {{ album.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nom de l'Album</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for album in albums %}
+                    <tr>
+                        <td>{{ album.id }}</td>
+                        <td>{{ album.name }}</td>
+                        <td>
+                            <a href="{{ path('album_show', { 'id': album.id }) }}" class="btn btn-primary btn-sm">
+                                Voir l'album
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% elseif albums is defined %}
         {# Display a single album if it's not iterable (a single object) #}
-        <h2>{{ albums.name }}</h2>
-        <p>ID: {{ albums.id }}</p>
-        <a href="{{ path('album_show', { 'id': albums.id }) }}">Afficher l'album</a>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="card-title">{{ albums.name }}</h2>
+                <p class="card-text"><strong>ID:</strong> {{ albums.id }}</p>
+                <a href="{{ path('album_show', { 'id': albums.id }) }}" class="btn btn-primary">Afficher l'album</a>
+            </div>
+        </div>
     {% else %}
-        <p>Aucun album trouvé.</p>
+        <p class="text-center">Aucun album trouvé.</p>
     {% endif %}
 
-    <a href="{{ path('app_album') }}">Retour à la liste des albums</a>
+    <a href="{{ path('app_album') }}" class="btn btn-secondary mt-3">Retour à la liste des albums</a>
+</div>
 {% endblock %}

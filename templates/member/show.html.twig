@@ -3,15 +3,40 @@
 {% block title %}Expositions de {{ member.email }}{% endblock %}
 
 {% block body %}
-    <h1>Expositions de {{ member.email }}</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Fiche du Membre</h1>
 
-    <table class="table">
-        <thead>
+    {% if member %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <p><strong>ID :</strong> {{ member.id }}</p>
+                <p><strong>Email :</strong> {{ member.email }}</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">Aucun membre trouvé.</div>
+    {% endif %}
+
+    <h3 class="text-primary">Album</h3>
+    {% if member.album is not empty %}
+        <ul class="list-group mb-4">
+            <li class="list-group-item">
+                <a href="{{ path('album_show', {'id': member.album.id}) }}">{{ member.album.name }}</a>
+            </li>
+        </ul>
+    {% else %}
+        <p>Aucun album trouvé.</p>
+    {% endif %}
+
+    <h3 class="text-primary">Expositions de {{ member.email }}</h3>
+
+    <table class="table table-striped table-hover mb-4">
+        <thead class="table-dark">
             <tr>
-                <th>Id</th>
-                <th>Description</th>
-                <th>Publiée</th>
-                <th>Actions</th>
+                <th scope="col">ID</th>
+                <th scope="col">Description</th>
+                <th scope="col">Publiée</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,22 +44,27 @@
             <tr>
                 <td>{{ exposition.id }}</td>
                 <td>{{ exposition.description }}</td>
-                <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+                <td>{{ exposition.publiee ? 'Oui' : 'Non' }}</td>
                 <td>
-                    <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}">Afficher</a>
-                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}">Modifier</a>
+                    <a href="{{ path('app_exposition_show', {'id': exposition.id}) }}" class="btn btn-outline-primary btn-sm">
+                        Afficher
+                    </a>
+                    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}" class="btn btn-outline-secondary btn-sm">
+                        Modifier
+                    </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">Aucune Expositions trouvée pour ce membre.</td>
+                <td colspan="4" class="text-center">Aucune exposition trouvée pour ce membre.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    {# Link to create a new gallery for this member #}
-    <a href="{{ path('app_exposition_new', { 'memberId': member.id }) }}">Créer une nouvelle Exposition</a>
-
-    <a href="{{ path('app_member_index') }}">Retour à la liste des membres</a>
+    <div class="d-flex">
+        <a href="{{ path('app_exposition_new', { 'memberId': member.id }) }}" class="btn btn-success me-2">Créer une nouvelle Exposition</a>
+        <a href="{{ path('app_member_index') }}" class="btn btn-secondary">Retour à la liste des membres</a>
+    </div>
+</div>
 {% endblock %}

@@ -14,12 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/exposition')]
 final class ExpositionController extends AbstractController
 {
 
     #[Route('/{exposition_id}/billet/{billet_id}', name: 'app_exposition_billet_show', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')] 
     public function billetShow(
         #[MapEntity(id: 'exposition_id')] Exposition $exposition,
         #[MapEntity(id: 'billet_id')] Billet $billet
@@ -85,6 +87,8 @@ final class ExpositionController extends AbstractController
     //         'form' => $form,
     //     ]);
     // }
+
+    #[IsGranted('ROLE_USER')] 
     #[Route('/new/{memberId}', name: 'app_exposition_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, #[MapEntity(id: 'memberId')] Member $member): Response
     {
@@ -136,26 +140,32 @@ final class ExpositionController extends AbstractController
     
 
     #[Route('/{id}/edit', name: 'app_exposition_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')] 
     public function edit(Request $request, Exposition $exposition, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $exposition->getMember()) {
+            throw $this->createAccessDeniedException("You do not have permission to edit this exposition.");
+        }
+    
         $form = $this->createForm(ExpositionType::class, $exposition);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            // Redirect to the member's profile page after editing
-            return $this->redirectToRoute('app_member_show', [
-                'id' => $exposition->getMember()->getId(),
+    
+            return $this->redirectToRoute('app_exposition_show', [
+                'id' => $exposition->getId(),
             ], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('exposition/edit.html.twig', [
             'exposition' => $exposition,
             'form' => $form,
         ]);
     }
+
     #[Route('/{id}', name: 'app_exposition_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')] 
     public function delete(Request $request, Exposition $exposition, EntityManagerInterface $entityManager): Response
     {
         $memberId = $exposition->getMember()->getId();

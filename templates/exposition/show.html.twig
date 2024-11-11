@@ -41,7 +41,8 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_exposition_index') }}">Retour à la liste</a>
+    <a href="{{ path('app_exposition_index') }}" class="btn btn-secondary">Retour à la liste</a>
+    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}" class="btn btn-primary">Editer</a>
+    
     {{ include('exposition/_delete_form.html.twig') }}
-
 {% endblock %}
