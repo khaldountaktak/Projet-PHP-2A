@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Billet{% endblock %}
-
 {% block body %}
+
 <div class="container mt-5">
     <h1 class="mb-4">Détails du Billet</h1>
 
@@ -27,7 +27,7 @@
             <tr>
                 <th scope="row">Image</th>
                 <td>
-                    {% if billet.imageFile %}
+                    {% if billet.imageName %}
                         <img src="{{ vich_uploader_asset(billet, 'imageFile') }}" class="img-fluid" alt="Image du billet" />
                     {% else %}
                         <span>Aucune image disponible</span>

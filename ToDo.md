@@ -29,7 +29,5 @@
 - [x] Affichage des seules expositions publiques
 - [x] Contextualisation de la création d'une [Exposition] en fonction du membre
 - [x] Contextualisation de l'ajout d'un [Billet] à une [Exposition]
-- [x] Utilisation des messages flash pour les CRUDs
-- [x] Ajout d'une gestion de marque-pages/panier dans le front-office
 - [x] Protection de l'accès aux données à leurs seuls propriétaires
 - [x] Contextualisation du chargement des données en fonction de l'utilisateur connecté

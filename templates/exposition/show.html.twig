@@ -3,37 +3,45 @@
 {% block title %}Exposition n°{{ exposition.id }}{% endblock %}
 
 {% block body %}
-    <h1>Exposition</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Détails de l'Exposition</h1>
 
-    <table class="table">
+    <table class="table table-bordered table-hover">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th scope="row">ID</th>
                 <td>{{ exposition.id }}</td>
             </tr>
             <tr>
-                <th>Description</th>
+                <th scope="row">Description</th>
                 <td>{{ exposition.description }}</td>
             </tr>
             <tr>
-                <th>Publiée</th>
-                <td>{{ exposition.publiee ? 'Yes' : 'No' }}</td>
+                <th scope="row">Publiée</th>
+                <td>{{ exposition.publiee ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-                <th>Billets de l'exposition</th>
+                <th scope="row">Billets de l'exposition</th>
                 <td>
-                    <ul>
+                    <ul class="list-group">
                     {% for billet in exposition.billets %}
-                        <li>
+                        <li class="list-group-item d-flex align-items-center">
+                            {% if billet.imageName %}
+                                <img src="{{ vich_uploader_asset(billet, 'imageFile') }}" alt="{{ billet.pays }}" class="img-thumbnail me-3" style="width: 100px; height: auto;">
+                            {% else %}
+                                <div class="text-muted me-3" style="width: 100px; height: auto; text-align: center; line-height: 100px; border: 1px dashed #ccc;">
+                                    Aucune image
+                                </div>
+                            {% endif %}
                             <a href="{{ path('app_exposition_billet_show', {
                                 'exposition_id': exposition.id,
                                 'billet_id': billet.id
-                            }) }}">
+                            }) }}" class="text-decoration-none">
                                 {{ billet.pays }} - {{ billet.valeur }}
                             </a>
                         </li>
                     {% else %}
-                        <li>Aucun billet dans cette exposition.</li>
+                        <li class="list-group-item text-muted">Aucun billet dans cette exposition.</li>
                     {% endfor %}
                     </ul>
                 </td>
@@ -41,8 +49,11 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_exposition_index') }}" class="btn btn-secondary">Retour à la liste</a>
-    <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}" class="btn btn-primary">Editer</a>
-    
+    <div class="d-flex mt-4">
+        <a href="{{ path('app_exposition_index') }}" class="btn btn-secondary me-2">Retour à la liste</a>
+        <a href="{{ path('app_exposition_edit', {'id': exposition.id}) }}" class="btn btn-primary">Editer</a>
+    </div>
+
     {{ include('exposition/_delete_form.html.twig') }}
+</div>
 {% endblock %}
